@@ -248,11 +248,15 @@ async def risk_score(gstin: str):
     neighbour_score = min(high_count * 15 + medium_count * 5, 60)
     score = min(base + neighbour_score, 100)
 
+    # ── Classification: 0-30 LOW, 31-60 MEDIUM, 61-100 HIGH ──
+    risk_level = "HIGH" if score >= 61 else "MEDIUM" if score >= 31 else "LOW"
+
     return {
         "gstin": rec.get("gstin"),
         "name": rec.get("name"),
         "own_risk": own_risk,
         "risk_score": score,
+        "risk_level": risk_level,
         "total_neighbors": rec.get("total_neighbors", 0),
         "high_risk_neighbors": rec.get("high_risk_neighbors", []),
         "medium_risk_neighbors": rec.get("medium_risk_neighbors", []),
